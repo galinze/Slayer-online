@@ -1,99 +1,105 @@
 local Players=game:GetService("Players")
 local p=Players.LocalPlayer
-local s=Instance.new("ScreenGui",p:WaitForChild("PlayerGui"))
 
-local gF=Instance.new("Frame",s)
-gF.Size=UDim2.new(0,200,0,300)
-gF.Position=UDim2.new(0,10,0,10)
-gF.BackgroundColor3=Color3.fromRGB(40,40,40)
-gF.Visible=false
+local function cG()
+    if not p:FindFirstChild("PlayerGui") then return end
+    if p.PlayerGui:FindFirstChild("ScreenGui") then return end
 
-local tB=Instance.new("TextButton",s)
-tB.Size=UDim2.new(0,40,0,40)
-tB.Position=UDim2.new(0,5,0,5)
-tB.Text="🐔"
-tB.BackgroundColor3=Color3.fromRGB(60,60,60)
+    local sG=Instance.new("ScreenGui",p.PlayerGui)
+    sG.Name="ScreenGui"
 
-local sf=Instance.new("ScrollingFrame",gF)
-sf.Size=UDim2.new(1,0,1,-40)
-sf.Position=UDim2.new(0,0,0,40)
-sf.CanvasSize=UDim2.new(0,0,0,0)
-sf.ScrollBarThickness=6
-sf.BackgroundTransparency=1
+    local gF=Instance.new("Frame",sG)
+    gF.Size=UDim2.new(0,200,0,300)
+    gF.Position=UDim2.new(0,10,0,10)
+    gF.BackgroundColor3=Color3.fromRGB(40,40,40)
+    gF.Visible=false
 
-local kB=Instance.new("TextButton",gF)
-kB.Size=UDim2.new(1,0,0,30)
-kB.Position=UDim2.new(0,0,0,0)
-kB.Text="Kill All"
-kB.BackgroundColor3=Color3.fromRGB(200,0,0)
-kB.TextColor3=Color3.fromRGB(255,255,255)
-kB.Font=Enum.Font.SourceSansBold
-kB.TextSize=18
+    local tB=Instance.new("TextButton",sG)
+    tB.Size=UDim2.new(0,40,0,40)
+    tB.Position=UDim2.new(0,5,0,5)
+    tB.Text="🐔"
+    tB.BackgroundColor3=Color3.fromRGB(60,60,60)
 
-tB.MouseButton1Click:Connect(function() gF.Visible=not gF.Visible end)
+    local sf=Instance.new("ScrollingFrame",gF)
+    sf.Size=UDim2.new(1,0,1,-40)
+    sf.Position=UDim2.new(0,0,0,40)
+    sf.CanvasSize=UDim2.new(0,0,0,0)
+    sf.ScrollBarThickness=6
+    sf.BackgroundTransparency=1
 
-local ka=false
-kB.MouseButton1Click:Connect(function()
-    ka=not ka
-    if ka then
-        kB.Text="Kill All (ON)"
-        kB.BackgroundColor3=Color3.fromRGB(255,50,50)
-    else
-        kB.Text="Kill All (OFF)"
-        kB.BackgroundColor3=Color3.fromRGB(200,0,0)
-    end
-end)
+    local kB=Instance.new("TextButton",gF)
+    kB.Size=UDim2.new(1,0,0,30)
+    kB.Position=UDim2.new(0,0,0,0)
+    kB.Text="Kill All"
+    kB.BackgroundColor3=Color3.fromRGB(200,0,0)
+    kB.TextColor3=Color3.fromRGB(255,255,255)
+    kB.Font=Enum.Font.SourceSansBold
+    kB.TextSize=18
 
-task.spawn(function()
-    while true do
-        task.wait(1)
+    tB.MouseButton1Click:Connect(function() gF.Visible=not gF.Visible end)
+
+    local ka=false
+    kB.MouseButton1Click:Connect(function()
+        ka=not ka
         if ka then
-            for _,n in pairs(workspace.Npcs:GetChildren()) do
-                local h=n:FindFirstChildOfClass("Humanoid")
-                if h then h.Health=0 end
+            kB.Text="Kill All (ON)"
+            kB.BackgroundColor3=Color3.fromRGB(255,50,50)
+        else
+            kB.Text="Kill All (OFF)"
+            kB.BackgroundColor3=Color3.fromRGB(200,0,0)
+        end
+    end)
+
+    task.spawn(function()
+        while true do
+            task.wait(1)
+            if ka then
+                for _,n in pairs(workspace.Npcs:GetChildren()) do
+                    local h=n:FindFirstChildOfClass("Humanoid")
+                    if h then h.Health=0 end
+                end
             end
         end
-    end
-end)
+    end)
 
-local function uNL()
-    for _,c in ipairs(sf:GetChildren()) do
-        if c:IsA("TextButton") then c:Destroy() end
-    end
+    local function uNL()
+        for _,c in ipairs(sf:GetChildren()) do
+            if c:IsA("TextButton") then c:Destroy() end
+        end
+        local y=0
+        local a={}
+        for _,n in pairs(workspace.Npcs:GetChildren()) do
+            if n:IsA("Model") and not Players:FindFirstChild(n.Name) then
+                if not a[n.Name] then
+                    a[n.Name]=true
+                    local b=Instance.new("TextButton",sf)
+                    b.Size=UDim2.new(1,-10,0,30)
+                    b.Position=UDim2.new(0,5,0,y)
+                    b.Text=n.Name
+                    b.BackgroundColor3=Color3.fromRGB(70,70,70)
+                    b.TextColor3=Color3.fromRGB(255,255,255)
+                    b.Font=Enum.Font.SourceSans
+                    b.TextSize=16
 
-    local y=0
-    local a={}
-
-    for _,n in pairs(workspace.Npcs:GetChildren()) do
-        if n:IsA("Model") and not Players:FindFirstChild(n.Name) then
-            if not a[n.Name] then
-                a[n.Name]=true
-                local b=Instance.new("TextButton",sf)
-                b.Size=UDim2.new(1,-10,0,30)
-                b.Position=UDim2.new(0,5,0,y)
-                b.Text=n.Name
-                b.BackgroundColor3=Color3.fromRGB(70,70,70)
-                b.TextColor3=Color3.fromRGB(255,255,255)
-                b.Font=Enum.Font.SourceSans
-                b.TextSize=16
-
-                b.MouseButton1Click:Connect(function()
-                    for _,m in pairs(workspace.Npcs:GetChildren()) do
-                        if m.Name==n.Name then
-                            local h=m:FindFirstChildOfClass("Humanoid")
-                            if h then h.Health=0 end
+                    b.MouseButton1Click:Connect(function()
+                        for _,m in pairs(workspace.Npcs:GetChildren()) do
+                            if m.Name==n.Name then
+                                local h=m:FindFirstChildOfClass("Humanoid")
+                                if h then h.Health=0 end
+                            end
                         end
-                    end
-                end)
-
-                y=y+35
+                    end)
+                    y=y+35
+                end
             end
         end
+        sf.CanvasSize=UDim2.new(0,0,0,y)
     end
 
-    sf.CanvasSize=UDim2.new(0,0,0,y)
+    workspace.Npcs.ChildAdded:Connect(uNL)
+    workspace.Npcs.ChildRemoved:Connect(uNL)
+    uNL()
 end
 
-workspace.Npcs.ChildAdded:Connect(uNL)
-workspace.Npcs.ChildRemoved:Connect(uNL)
-uNL()
+cG()
+p.CharacterAdded:Connect(cG)
